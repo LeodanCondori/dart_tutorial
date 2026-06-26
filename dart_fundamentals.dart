@@ -133,53 +133,146 @@
 
 // =====================================================================
 // Functions (parameters, optional, named, default values, arrow functions)
+// // =====================================================================
+// void main() {
+//   // Calling a basic function
+//   printGreeting("Leo");
+
+//   // Calling a function with optional positional parameters
+//   printFormat("Log file updated", true);
+//   printFormat("System rebooted"); // Works without the second argument
+
+//   // Calling a function with named parameters (Order doesn't matter!)
+//   configureServer(host: "localhost", port: 8080);
+//   configureServer(port: 3000, host: "127.0.0.1"); // Also valid
+
+//   // Calling a function with mixed required and optional named parameters
+//   createUser(username: "dev_leo"); // uses default role 'user'
+//   createUser(username: "admin_leo", role: "admin");
+
+//   // Calling an arrow function
+//   print("Square of 5: ${square(5)}");
+// }
+
+// // 1. Basic Function (Required Positional Parameters)
+// void printGreeting(String name) {
+//   print("Hello, $name!");
+// }
+
+// // 2. Optional Positional Parameters (Wrapped in square brackets `[]`)
+// // They must be at the end, and they need a default value or be nullable.
+// void printFormat(String message, [bool uppercase = false]) {
+//   if (uppercase) {
+//     print(message.toUpperCase());
+//   } else {
+//     print(message);
+//   }
+// }
+
+// // 3. Named Parameters (Wrapped in curly braces `{}`)
+// // Highly used in Flutter! They are optional by default unless marked `required`.
+// void configureServer({required String host, required int port}) {
+//   print("Server running on http://$host:$port");
+// }
+
+// // 4. Named Parameters with Default Values
+// void createUser({required String username, String role = "user"}) {
+//   print("Created user: $username with role: $role");
+// }
+
+// // 5. Arrow Functions (`=>`)
+// // A shorthand syntax for functions that contain exactly ONE expression or return statement.
+// int square(int number) => number * number;
+
+// =====================================================================
+// Collections (`List`, `Set`, `Map`)
+// =====================================================================
+// void main() {
+//   // 1. Lists (Ordered, allows duplicates, indexed)
+//   final List<String> names = ["Alice", "Bob", "Charlie", "Alice"];
+//   print("List: $names");
+//   print("First item: ${names[0]}"); // Demonstrating index access
+//   names.add("David");
+//   print("Updated List: $names\n");
+
+//   // 2. Sets (Unordered, unique elements only)
+//   final Set<String> uniqueNames = {"Alice", "Bob", "Charlie"};
+//   print("Set: $uniqueNames");
+//   uniqueNames.add("Alice"); // Ignored because it's a duplicate
+//   print("Updated Set: $uniqueNames\n");
+
+//   // 3. Maps (Key-Value pairs, keys must be unique)
+//   final Map<String, int> ages = {"Alice": 30, "Bob": 25, "Charlie": 35};
+//   print("Map: $ages");
+//   print("Alice's age: ${ages['Alice']}"); // Demonstrating lookup
+//   ages["David"] = 40;
+//   print("Updated Map: $ages");
+// }
+
+// =====================================================================
+// Null Safety (`?`, `!`, `late`, `?.`, `??`, `??=`)
+// =====================================================================
+// void main() {
+//   // 1. Nullable Types (`?`)
+//   // By default, Dart variables cannot be null. Append '?' to allow it.
+//   String? nullableName = null; 
+//   String nonNullableName = "John"; // Cannot be set to null
+//   print("Nullable Name: $nullableName");
+
+//   // 2. Null-Aware Property Access (`?.`)
+//   // Prevents a crash by returning null if the object is null, instead of calling the method.
+//   int? nameLength = nullableName?.length; 
+//   print("Length (safely accessed): $nameLength"); // Prints: null
+
+//   // 3. Null-Coalescing/Fallback Operator (`??`)
+//   // Returns the left side if it's NOT null; otherwise, returns the right side.
+//   String displayName = nullableName ?? "Guest";
+//   print("Display Name: $displayName"); // Prints: Guest
+
+//   // 4. Null-Aware Assignment (`??=`)
+//   // Assigns a value to a variable ONLY if that variable is currently null.
+//   String? currentStatus = null;
+//   currentStatus ??= "Active"; // Changes null to "Active"
+//   currentStatus ??= "Inactive"; // Ignored because it's no longer null
+//   print("Current Status: $currentStatus"); // Prints: Active
+
+//   // 5. Null Assertion Operator (`!`)
+//   // "Bang" operator. Tells Dart: "I swear this isn't null, treat it as non-nullable."
+//   // WARNING: If it actually IS null at runtime, this throws a crash (TypeError).
+//   nullableName = "Alice";
+//   String forcedName = nullableName!; 
+//   print("Forced Non-Null Name: $forcedName");
+
+//   // 6. Late Initialization (`late`)
+//   // Used for variables that are non-nullable, but initialized AFTER declaration.
+//   // If you try to read it before initializing it, it throws a LateInitializationError.
+//   late String heavyDatabaseResult;
+  
+//   // Do some work...
+//   heavyDatabaseResult = "Data loaded successfully!"; 
+  
+//   print("Late Variable: $heavyDatabaseResult");
+// }
+
+// =====================================================================
+// Comparison between final and late
 // =====================================================================
 void main() {
-  // Calling a basic function
-  printGreeting("Leo");
+  // 1. Just 'late' (Can be changed as many times as you want)
+  late String status;
+  status = "Loading";  // First assignment
+  status = "Success";  // Reassignment is totally fine!
+  print(status);
 
-  // Calling a function with optional positional parameters
-  printFormat("Log file updated", true);
-  printFormat("System rebooted"); // Works without the second argument
+  // 2. Just 'final' (Must be set immediately, can never change)
+  final String id = "USR-102";
+  // id = "USR-103"; // ❌ Compile-time error! Dart won't even let you run this.
 
-  // Calling a function with named parameters (Order doesn't matter!)
-  configureServer(host: "localhost", port: 8080);
-  configureServer(port: 3000, host: "127.0.0.1"); // Also valid
-
-  // Calling a function with mixed required and optional named parameters
-  createUser(username: "dev_leo"); // uses default role 'user'
-  createUser(username: "admin_leo", role: "admin");
-
-  // Calling an arrow function
-  print("Square of 5: ${square(5)}");
+  // 3. Combined 'late final' (Initialized later, but can only be set ONCE)
+  late final String apiKey;
+  
+  // Some network setup happens...
+  apiKey = "XYZ123"; // First assignment works!
+  
+  // apiKey = "ABC789"; // ❌ Runtime crash! Throws a LateInitializationError because it's final.
 }
-
-// 1. Basic Function (Required Positional Parameters)
-void printGreeting(String name) {
-  print("Hello, $name!");
-}
-
-// 2. Optional Positional Parameters (Wrapped in square brackets `[]`)
-// They must be at the end, and they need a default value or be nullable.
-void printFormat(String message, [bool uppercase = false]) {
-  if (uppercase) {
-    print(message.toUpperCase());
-  } else {
-    print(message);
-  }
-}
-
-// 3. Named Parameters (Wrapped in curly braces `{}`)
-// Highly used in Flutter! They are optional by default unless marked `required`.
-void configureServer({required String host, required int port}) {
-  print("Server running on http://$host:$port");
-}
-
-// 4. Named Parameters with Default Values
-void createUser({required String username, String role = "user"}) {
-  print("Created user: $username with role: $role");
-}
-
-// 5. Arrow Functions (`=>`)
-// A shorthand syntax for functions that contain exactly ONE expression or return statement.
-int square(int number) => number * number;
