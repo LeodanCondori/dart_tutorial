@@ -1,21 +1,3 @@
-// Requirements:
-
-//     The Clean-up: You are given a List<String> of names who RSVP'd, but some people submitted their names twice. Convert this list into a Set<String> to instantly eliminate duplicates.
-
-//     The Invitation Function: Write a function called sendInvite with the following parameters:
-
-//         required String name
-
-//         String? email (Optional/Nullable)
-
-//         String tableNumber = "General Seating" (Named parameter with a default value)
-
-//     The Flow: Loop through your clean Set of guests and call sendInvite for each.
-
-//         Inside the function, use an if-else statement or a null-aware assignment (??=) to check if the email is missing. If it is null, print: "⚠️ [Name] needs a manual phone call for Table: [tableNumber]".
-
-//         If the email exists, print: "📧 Email sent to [Name] at [email] for Table: [tableNumber]".
-        
 // To run this file: dart run invitation_manager.dart
 
 // =====================================================================
@@ -23,28 +5,41 @@
 // =====================================================================
 
 void main() {
-  print("=== Dart CLI Invitation Manager ===");
+  print("=== Dart CLI Invitation Manager ===\n");
 
-  final rsvps = [
-    "Alice",
-    "Bob",
-    "Charlie",
-    "Alice",
-    "David",
-    "Bob",
-  ];
+  final rsvps = ["Alice", "Bob", "Charlie", "Alice", "David", "Bob"];
 
+  // Unique guest list
   final guests = rsvps.toSet();
 
+  // Simulated email database (Notice Charlie and David don't have emails)
+  final Map<String, String?> emailDatabase = {
+    "Alice": "alice@email.com",
+    "Bob": "bob@email.com",
+    // Charlie is missing from the database entirely -> returns null
+    // David is explicitly null
+    "David": null,
+  };
+
   for (final guest in guests) {
-    sendInvite(name: guest, email: "[EMAIL_ADDRESS]", tableNumber: "Table 3");
+    // 1. Look up the email. If they aren't in the map, it safely returns null.
+    final String? guestEmail = emailDatabase[guest];
+
+    // 2. Mix up the table assignments to test your default parameter!
+    if (guest == "Alice") {
+      // Alice gets a VIP table
+      sendInvite(name: guest, email: guestEmail, tableNumber: "VIP Table 1");
+    } else {
+      // Everyone else relies on your "General Seating" default value
+      sendInvite(name: guest, email: guestEmail); 
+    }
   }
 }
 
 void sendInvite({
   required String name,
   String? email,
-  String tableNumber = "General Seating",
+  String tableNumber = "General Seating", // Default parameter
 }) {
   if (email == null) {
     print("⚠️ $name needs a manual phone call for Table: $tableNumber");
